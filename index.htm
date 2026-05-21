@@ -1,0 +1,1440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Midnight At The Mansion — Banana Studios</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;500;600&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet"/>
+<style>
+/* ── Variables ── */
+:root {
+  --black:      #080608;
+  --deep:       #0d0a0e;
+  --surface:    #13101a;
+  --panel:      #1a1523;
+  --border:     #2e2438;
+  --red:        #9b1c1c;
+  --red-bright: #c0392b;
+  --red-glow:   #ff2b2b;
+  --gold:       #c9a84c;
+  --gold-dim:   #7a6230;
+  --fog:        rgba(180,140,200,0.04);
+  --text:       #e8dfd0;
+  --text-dim:   #8a7f72;
+  --text-faint: #4a4440;
+  --font-title: 'Cinzel Decorative', serif;
+  --font-head:  'Cinzel', serif;
+  --font-body:  'EB Garamond', serif;
+  --radius:     4px;
+  --glow-red:   0 0 30px rgba(155,28,28,0.4), 0 0 60px rgba(155,28,28,0.15);
+  --glow-gold:  0 0 20px rgba(201,168,76,0.3);
+}
+
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--black);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 18px;
+  line-height: 1.7;
+  min-height: 100vh;
+  overflow-x: hidden;
+  cursor: default;
+}
+
+/* ── Background ── */
+#bg {
+  position: fixed; inset: 0; z-index: 0;
+  background: url('https://raw.githubusercontent.com/Banana-Studios-Official/Midnight-At-The-Mansion/main/background.png') center/cover no-repeat;
+}
+#bg::after {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    linear-gradient(to bottom, rgba(8,6,8,0.7) 0%, rgba(8,6,8,0.5) 40%, rgba(8,6,8,0.85) 100%),
+    radial-gradient(ellipse at 50% 0%, rgba(155,28,28,0.12) 0%, transparent 60%);
+}
+
+/* Floating fog particles */
+.fog-particle {
+  position: fixed;
+  width: 300px; height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(180,140,200,0.06) 0%, transparent 70%);
+  animation: drift linear infinite;
+  pointer-events: none; z-index: 1;
+}
+@keyframes drift {
+  from { transform: translateX(-400px) translateY(0px); opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 1; }
+  to   { transform: translateX(calc(100vw + 400px)) translateY(-80px); opacity: 0; }
+}
+
+/* ── Layout ── */
+#app { position: relative; z-index: 2; min-height: 100vh; }
+
+/* ── Nav ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 3rem;
+  height: 64px;
+  background: linear-gradient(to bottom, rgba(8,6,8,0.95), rgba(8,6,8,0.0));
+  border-bottom: 1px solid rgba(201,168,76,0.08);
+}
+.nav-logo {
+  font-family: var(--font-title);
+  font-size: 0.85rem;
+  color: var(--gold);
+  letter-spacing: 0.05em;
+  text-shadow: var(--glow-gold);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.nav-links { display: flex; gap: 2rem; }
+.nav-link {
+  font-family: var(--font-head);
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: color 0.2s;
+  border: none; background: none;
+}
+.nav-link:hover { color: var(--gold); }
+
+/* ── Pages ── */
+.page { display: none; min-height: 100vh; padding-top: 64px; }
+.page.active { display: block; }
+
+/* ── HOME ── */
+#page-home {
+  display: none;
+  flex-direction: column;
+}
+#page-home.active { display: flex; }
+
+.hero {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  min-height: 100vh;
+  text-align: center;
+  padding: 2rem;
+  position: relative;
+}
+
+.hero-eyebrow {
+  font-family: var(--font-head);
+  font-size: 0.65rem;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--gold-dim);
+  margin-bottom: 1.5rem;
+  animation: fadeUp 1s ease both;
+}
+
+.hero-title {
+  font-family: var(--font-title);
+  font-size: clamp(2.2rem, 6vw, 5rem);
+  font-weight: 900;
+  color: var(--text);
+  line-height: 1.1;
+  text-shadow: 0 0 60px rgba(155,28,28,0.5), 0 2px 4px rgba(0,0,0,0.8);
+  animation: fadeUp 1s 0.15s ease both;
+  max-width: 900px;
+}
+.hero-title span { color: var(--red-bright); }
+
+.hero-divider {
+  width: 120px; height: 1px;
+  background: linear-gradient(to right, transparent, var(--gold), transparent);
+  margin: 2rem auto;
+  animation: fadeUp 1s 0.25s ease both;
+}
+
+.hero-sub {
+  font-size: 1.15rem;
+  color: var(--text-dim);
+  max-width: 560px;
+  font-style: italic;
+  animation: fadeUp 1s 0.35s ease both;
+  margin-bottom: 3rem;
+}
+
+.hero-buttons {
+  display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;
+  animation: fadeUp 1s 0.5s ease both;
+}
+
+.btn {
+  font-family: var(--font-head);
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  padding: 0.9rem 2.2rem;
+  border: none; cursor: pointer;
+  transition: all 0.25s;
+  text-decoration: none;
+  display: inline-block;
+}
+.btn-primary {
+  background: var(--red);
+  color: var(--text);
+  box-shadow: var(--glow-red);
+}
+.btn-primary:hover {
+  background: var(--red-bright);
+  box-shadow: 0 0 40px rgba(192,57,43,0.6), 0 0 80px rgba(192,57,43,0.2);
+  transform: translateY(-2px);
+}
+.btn-secondary {
+  background: transparent;
+  color: var(--gold);
+  border: 1px solid var(--gold-dim);
+}
+.btn-secondary:hover {
+  background: rgba(201,168,76,0.08);
+  border-color: var(--gold);
+  transform: translateY(-2px);
+}
+.btn-ghost {
+  background: transparent;
+  color: var(--text-dim);
+  border: 1px solid var(--border);
+}
+.btn-ghost:hover { color: var(--text); border-color: var(--text-dim); }
+
+/* Scroll indicator */
+.scroll-hint {
+  position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+  color: var(--text-faint);
+  font-family: var(--font-head);
+  font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase;
+  animation: fadeUp 1s 0.8s ease both;
+}
+.scroll-arrow {
+  width: 1px; height: 40px;
+  background: linear-gradient(to bottom, var(--gold-dim), transparent);
+  animation: scrollPulse 2s ease-in-out infinite;
+}
+@keyframes scrollPulse { 0%,100%{opacity:0.3} 50%{opacity:1} }
+
+/* Features section */
+.features {
+  padding: 6rem 2rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.section-label {
+  font-family: var(--font-head);
+  font-size: 0.65rem;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--gold-dim);
+  text-align: center;
+  margin-bottom: 1rem;
+}
+.section-title {
+  font-family: var(--font-title);
+  font-size: clamp(1.5rem, 3vw, 2.5rem);
+  text-align: center;
+  color: var(--text);
+  margin-bottom: 4rem;
+}
+
+.roles-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1px;
+  border: 1px solid var(--border);
+}
+.role-card {
+  padding: 1.5rem;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  transition: background 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.role-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: var(--role-color, var(--border));
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.role-card:hover { background: var(--panel); }
+.role-card:hover::before { opacity: 1; }
+.role-name {
+  font-family: var(--font-head);
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  color: var(--role-color, var(--gold));
+  margin-bottom: 0.4rem;
+}
+.role-desc { font-size: 0.85rem; color: var(--text-dim); font-style: italic; }
+
+/* Download section */
+.download-section {
+  padding: 6rem 2rem;
+  text-align: center;
+  border-top: 1px solid var(--border);
+}
+.platform-links {
+  display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
+  margin-top: 2.5rem;
+}
+
+/* ── FORM PAGES ── */
+.form-page {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 4rem 2rem 6rem;
+}
+.form-page-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+.form-page-eyebrow {
+  font-family: var(--font-head);
+  font-size: 0.65rem;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--gold-dim);
+  margin-bottom: 1rem;
+}
+.form-page-title {
+  font-family: var(--font-title);
+  font-size: clamp(1.4rem, 4vw, 2.2rem);
+  color: var(--text);
+  margin-bottom: 1rem;
+}
+.form-page-desc {
+  color: var(--text-dim);
+  font-style: italic;
+  font-size: 1rem;
+}
+.form-divider {
+  width: 80px; height: 1px;
+  background: linear-gradient(to right, transparent, var(--gold-dim), transparent);
+  margin: 1.5rem auto;
+}
+
+/* Form elements */
+.form-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 2.5rem;
+  margin-bottom: 1.5rem;
+}
+.form-panel-title {
+  font-family: var(--font-head);
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold-dim);
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border);
+}
+.form-group { margin-bottom: 1.5rem; }
+.form-group:last-child { margin-bottom: 0; }
+
+label {
+  display: block;
+  font-family: var(--font-head);
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 0.5rem;
+}
+label .required { color: var(--red-bright); margin-left: 2px; }
+
+input[type="text"],
+input[type="email"],
+input[type="date"],
+textarea,
+select {
+  width: 100%;
+  background: var(--deep);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  padding: 0.75rem 1rem;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  -webkit-appearance: none;
+}
+input:focus, textarea:focus, select:focus {
+  border-color: var(--gold-dim);
+  box-shadow: 0 0 0 2px rgba(201,168,76,0.1);
+}
+textarea { resize: vertical; min-height: 120px; }
+select option { background: var(--deep); }
+
+/* File upload */
+.file-upload-area {
+  border: 1px dashed var(--border);
+  background: var(--deep);
+  padding: 1.5rem;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  position: relative;
+}
+.file-upload-area:hover {
+  border-color: var(--gold-dim);
+  background: rgba(201,168,76,0.03);
+}
+.file-upload-area input[type="file"] {
+  position: absolute; inset: 0;
+  opacity: 0; cursor: pointer; width: 100%; height: 100%;
+}
+.file-upload-icon { font-size: 1.5rem; margin-bottom: 0.5rem; opacity: 0.4; }
+.file-upload-text {
+  font-family: var(--font-head);
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+.file-upload-sub { font-size: 0.8rem; color: var(--text-faint); margin-top: 0.25rem; }
+.file-list { margin-top: 0.75rem; text-align: left; }
+.file-item {
+  font-size: 0.85rem; color: var(--text-dim);
+  padding: 0.3rem 0;
+  border-bottom: 1px solid var(--border);
+  display: flex; justify-content: space-between; align-items: center;
+}
+.file-remove {
+  background: none; border: none; color: var(--red-bright);
+  cursor: pointer; font-size: 0.8rem; font-family: var(--font-head);
+}
+
+/* Evidence fields */
+.evidence-fields { display: flex; flex-direction: column; gap: 1rem; }
+.evidence-item {
+  background: var(--deep);
+  border: 1px solid var(--border);
+  padding: 1rem;
+}
+.evidence-label {
+  font-family: var(--font-head);
+  font-size: 0.6rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gold-dim);
+  margin-bottom: 0.75rem;
+}
+.evidence-tabs { display: flex; gap: 0; margin-bottom: 0.75rem; }
+.ev-tab {
+  font-family: var(--font-head);
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.4rem 0.9rem;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-faint);
+  cursor: pointer;
+  margin-right: -1px;
+  transition: all 0.15s;
+}
+.ev-tab.active {
+  background: var(--panel);
+  color: var(--gold);
+  border-color: var(--gold-dim);
+  z-index: 1;
+  position: relative;
+}
+.ev-content { display: none; }
+.ev-content.active { display: block; }
+
+/* Checkbox */
+.checkbox-group {
+  display: flex; align-items: flex-start; gap: 0.75rem;
+  cursor: pointer;
+}
+.checkbox-group input[type="checkbox"] {
+  width: 18px; height: 18px; min-width: 18px;
+  accent-color: var(--red);
+  margin-top: 3px;
+  cursor: pointer;
+}
+.checkbox-text { font-size: 0.9rem; color: var(--text-dim); }
+.checkbox-text a { color: var(--gold-dim); text-decoration: none; }
+.checkbox-text a:hover { color: var(--gold); }
+
+/* Notice box */
+.notice {
+  background: rgba(155,28,28,0.08);
+  border: 1px solid rgba(155,28,28,0.25);
+  border-left: 3px solid var(--red);
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+  color: var(--text-dim);
+}
+.notice strong { color: var(--text); }
+
+.info-box {
+  background: rgba(201,168,76,0.05);
+  border: 1px solid rgba(201,168,76,0.15);
+  border-left: 3px solid var(--gold-dim);
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+  color: var(--text-dim);
+}
+
+/* Submit area */
+.form-submit { text-align: center; margin-top: 2rem; }
+.btn-submit {
+  font-family: var(--font-head);
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  padding: 1rem 3rem;
+  background: var(--red);
+  color: var(--text);
+  border: none; cursor: pointer;
+  box-shadow: var(--glow-red);
+  transition: all 0.25s;
+  width: 100%;
+}
+.btn-submit:hover {
+  background: var(--red-bright);
+  box-shadow: 0 0 40px rgba(192,57,43,0.5);
+}
+.btn-submit:disabled {
+  background: var(--border);
+  color: var(--text-faint);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+/* Success state */
+.form-success {
+  display: none;
+  text-align: center;
+  padding: 3rem 2rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+.form-success.visible { display: block; }
+.success-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+.success-title {
+  font-family: var(--font-title);
+  font-size: 1.5rem;
+  color: var(--gold);
+  margin-bottom: 0.75rem;
+}
+.success-text { color: var(--text-dim); font-style: italic; }
+
+/* Error */
+.field-error { font-size: 0.8rem; color: var(--red-bright); margin-top: 0.35rem; }
+input.error, textarea.error { border-color: var(--red-bright); }
+
+/* ── HELPER BOT ── */
+#bot-toggle {
+  position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 999;
+  width: 56px; height: 56px;
+  background: var(--red);
+  border: none; border-radius: 50%;
+  cursor: pointer;
+  box-shadow: var(--glow-red);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.4rem;
+  transition: all 0.25s;
+}
+#bot-toggle:hover {
+  background: var(--red-bright);
+  transform: scale(1.1);
+}
+#bot-toggle.open { background: var(--border); box-shadow: none; }
+
+#bot-window {
+  position: fixed; bottom: 5rem; right: 1.5rem; z-index: 998;
+  width: 340px; max-height: 520px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  transform: scale(0.9) translateY(20px);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+}
+#bot-window.open {
+  transform: scale(1) translateY(0);
+  opacity: 1;
+  pointer-events: all;
+}
+
+.bot-header {
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 0.75rem;
+  background: var(--panel);
+}
+.bot-avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--red);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem; flex-shrink: 0;
+}
+.bot-name {
+  font-family: var(--font-head);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  color: var(--text);
+}
+.bot-status {
+  font-size: 0.7rem; color: var(--text-faint);
+}
+.bot-online-dot {
+  display: inline-block; width: 7px; height: 7px;
+  background: #2ecc71; border-radius: 50%; margin-right: 4px;
+}
+
+.bot-messages {
+  flex: 1; overflow-y: auto;
+  padding: 1rem;
+  display: flex; flex-direction: column; gap: 0.75rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+.bot-msg {
+  max-width: 85%;
+  padding: 0.6rem 0.9rem;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  animation: msgPop 0.2s ease both;
+}
+@keyframes msgPop {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.bot-msg.from-bot {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  color: var(--text);
+  align-self: flex-start;
+  border-radius: 0 8px 8px 8px;
+}
+.bot-msg.from-user {
+  background: var(--red);
+  color: var(--text);
+  align-self: flex-end;
+  border-radius: 8px 0 8px 8px;
+}
+.bot-typing {
+  display: none; align-self: flex-start;
+  padding: 0.6rem 0.9rem;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 0 8px 8px 8px;
+  gap: 4px;
+}
+.bot-typing.visible { display: flex; }
+.typing-dot {
+  width: 6px; height: 6px;
+  background: var(--text-dim); border-radius: 50%;
+  animation: typingBounce 1.2s ease-in-out infinite;
+}
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }
+@keyframes typingBounce {
+  0%,60%,100% { transform: translateY(0); }
+  30% { transform: translateY(-6px); }
+}
+
+.bot-input-area {
+  padding: 0.75rem;
+  border-top: 1px solid var(--border);
+  display: flex; gap: 0.5rem;
+}
+#bot-input {
+  flex: 1;
+  background: var(--deep);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  padding: 0.5rem 0.75rem;
+  outline: none;
+  resize: none;
+  height: 38px;
+  line-height: 1.4;
+}
+#bot-input:focus { border-color: var(--gold-dim); }
+#bot-send {
+  background: var(--red);
+  border: none; cursor: pointer;
+  color: var(--text); font-size: 1rem;
+  width: 38px; height: 38px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+#bot-send:hover { background: var(--red-bright); }
+
+/* ── Footer ── */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 2rem;
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--text-faint);
+  font-family: var(--font-head);
+  letter-spacing: 0.1em;
+}
+footer a { color: var(--gold-dim); text-decoration: none; }
+footer a:hover { color: var(--gold); }
+
+/* ── Animations ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Responsive ── */
+@media (max-width: 600px) {
+  nav { padding: 0 1rem; }
+  .nav-links { gap: 1rem; }
+  .nav-link { font-size: 0.6rem; }
+  .form-panel { padding: 1.5rem; }
+  #bot-window { width: calc(100vw - 2rem); right: 1rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- Background -->
+<div id="bg"></div>
+<div class="fog-particle" style="top:20%;animation-duration:45s;animation-delay:0s;width:400px;height:400px;"></div>
+<div class="fog-particle" style="top:50%;animation-duration:60s;animation-delay:-20s;width:250px;height:250px;"></div>
+<div class="fog-particle" style="top:70%;animation-duration:50s;animation-delay:-35s;"></div>
+
+<div id="app">
+
+  <!-- Nav -->
+  <nav>
+    <div class="nav-logo" onclick="showPage('home')">Midnight At The Mansion</div>
+    <div class="nav-links">
+      <button class="nav-link" onclick="showPage('home')">Home</button>
+      <button class="nav-link" onclick="showPage('register')">Register</button>
+      <button class="nav-link" onclick="showPage('appeal')">Appeal</button>
+      <button class="nav-link" onclick="showPage('restore')">Restore</button>
+    </div>
+  </nav>
+
+  <!-- ═══════════════════════ HOME ═══════════════════════ -->
+  <div id="page-home" class="page">
+    <section class="hero">
+      <p class="hero-eyebrow">Banana Studios Presents</p>
+      <h1 class="hero-title">Midnight At<br/><span>The Mansion</span></h1>
+      <div class="hero-divider"></div>
+      <p class="hero-sub">A 15-player online murder mystery where trust is a luxury and everyone has a secret.</p>
+      <div class="hero-buttons">
+        <a href="https://banana-studios-official.itch.io/midnight-at-the-mansion" target="_blank" class="btn btn-primary">Play on itch.io</a>
+        <a href="https://gamejolt.com/games/matm/1070193" target="_blank" class="btn btn-secondary">Play on GameJolt</a>
+        <a href="#" class="btn btn-ghost" style="opacity:0.5;cursor:not-allowed;">Steam — Coming Soon</a>
+      </div>
+      <div class="scroll-hint">
+        <div class="scroll-arrow"></div>
+        <span>Discover The Roles</span>
+      </div>
+    </section>
+
+    <section class="features">
+      <p class="section-label">The Cast</p>
+      <h2 class="section-title">Ten Roles. One Night. No Mercy.</h2>
+      <div class="roles-grid">
+        <div class="role-card" style="--role-color:#00ffff">
+          <div class="role-name">Guest</div>
+          <div class="role-desc">Survive from the Murderer</div>
+        </div>
+        <div class="role-card" style="--role-color:#ff3333">
+          <div class="role-name">Murderer</div>
+          <div class="role-desc">Murder all party guests</div>
+        </div>
+        <div class="role-card" style="--role-color:#3366ff">
+          <div class="role-name">Detective</div>
+          <div class="role-desc">Find and arrest the Murderer</div>
+        </div>
+        <div class="role-card" style="--role-color:#9900ff">
+          <div class="role-name">Vigilante</div>
+          <div class="role-desc">Figure out and kill the Murderer</div>
+        </div>
+        <div class="role-card" style="--role-color:#ff8800">
+          <div class="role-name">Faker</div>
+          <div class="role-desc">Act suspicious and get arrested</div>
+        </div>
+        <div class="role-card" style="--role-color:#80ff00">
+          <div class="role-name">Patient Zero</div>
+          <div class="role-desc">Infect all members to win</div>
+        </div>
+        <div class="role-card" style="--role-color:#ff3333">
+          <div class="role-name">Cleaner</div>
+          <div class="role-desc">Clean evidence, win with the Murderer</div>
+        </div>
+        <div class="role-card" style="--role-color:#00b3b3">
+          <div class="role-name">Engineer</div>
+          <div class="role-desc">Use vents and repair blackouts</div>
+        </div>
+        <div class="role-card" style="--role-color:#990000">
+          <div class="role-name">Shapeshifter</div>
+          <div class="role-desc">Shapeshift and deceive the members</div>
+        </div>
+        <div class="role-card" style="--role-color:#ff66cc">
+          <div class="role-name">Copier</div>
+          <div class="role-desc">Copy a role within 60 seconds or die</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="download-section">
+      <p class="section-label">Available Now</p>
+      <h2 class="section-title">Play For Free</h2>
+      <div class="platform-links">
+        <a href="https://banana-studios-official.itch.io/midnight-at-the-mansion" target="_blank" class="btn btn-primary">itch.io</a>
+        <a href="https://gamejolt.com/games/matm/1070193" target="_blank" class="btn btn-secondary">GameJolt</a>
+      </div>
+    </section>
+
+    <footer>
+      <p>&copy; 2024 Banana Studios &nbsp;·&nbsp;
+        <a onclick="showPage('register')">Junior Register</a> &nbsp;·&nbsp;
+        <a onclick="showPage('appeal')">Ban Appeal</a> &nbsp;·&nbsp;
+        <a onclick="showPage('restore')">Restore Purchase</a>
+      </p>
+    </footer>
+  </div>
+
+  <!-- ═══════════════════════ ADULT REGISTER (COPPA) ═══════════════════════ -->
+  <div id="page-register" class="page">
+    <div class="form-page">
+      <div class="form-page-header">
+        <p class="form-page-eyebrow">Parental Consent</p>
+        <h1 class="form-page-title">Junior Account Registration</h1>
+        <div class="form-divider"></div>
+        <p class="form-page-desc">Required for players under 13 years of age.<br/>In compliance with COPPA (Children's Online Privacy Protection Act).</p>
+      </div>
+
+      <div class="notice">
+        <strong>Notice to Parents & Guardians:</strong> Midnight At The Mansion collects a hardware identifier from your child's device to create their account. No real name, address, or payment information is collected from children. By completing this form you provide verifiable parental consent as required by COPPA. You may request deletion of your child's data at any time by contacting us via Discord.
+      </div>
+
+      <div id="register-form">
+        <div class="form-panel">
+          <div class="form-panel-title">Parent / Guardian Information</div>
+          <div class="form-group">
+            <label>Parent / Guardian Full Name <span class="required">*</span></label>
+            <input type="text" id="reg-parent-name" placeholder="Your full legal name"/>
+            <div class="field-error" id="err-reg-parent-name"></div>
+          </div>
+          <div class="form-group">
+            <label>Parent / Guardian Email Address <span class="required">*</span></label>
+            <input type="email" id="reg-parent-email" placeholder="your@email.com"/>
+            <div class="field-error" id="err-reg-parent-email"></div>
+          </div>
+          <div class="form-group">
+            <label>Relationship to Child <span class="required">*</span></label>
+            <select id="reg-relationship">
+              <option value="">— Select —</option>
+              <option value="Parent">Parent</option>
+              <option value="Legal Guardian">Legal Guardian</option>
+              <option value="Other">Other (specify below)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-panel">
+          <div class="form-panel-title">Child Information</div>
+          <div class="form-group">
+            <label>Child's In-Game Username <span class="required">*</span></label>
+            <input type="text" id="reg-child-username" placeholder="Their display name in Midnight At The Mansion"/>
+            <div class="field-error" id="err-reg-child-username"></div>
+          </div>
+          <div class="form-group">
+            <label>Child's Date of Birth <span class="required">*</span></label>
+            <input type="date" id="reg-child-dob"/>
+            <div class="field-error" id="err-reg-child-dob"></div>
+          </div>
+        </div>
+
+        <div class="form-panel">
+          <div class="form-panel-title">Consent & Agreement</div>
+
+          <div class="info-box" style="margin-bottom:1.25rem;">
+            By registering, your child will receive a <strong>Junior Account</strong> which includes: quick chat only (no free text), no voice chat, and access to juniors-only servers. These restrictions exist to keep your child safe.
+          </div>
+
+          <div class="form-group">
+            <label class="checkbox-group">
+              <input type="checkbox" id="reg-consent-data"/>
+              <span class="checkbox-text">I consent to Banana Studios collecting a hardware identifier and display name from my child's device for the purpose of creating and managing their game account.</span>
+            </label>
+          </div>
+          <div class="form-group">
+            <label class="checkbox-group">
+              <input type="checkbox" id="reg-consent-rules"/>
+              <span class="checkbox-text">I have read and agree to the game's rules on behalf of my child. I understand I can request deletion of their data at any time via Discord.</span>
+            </label>
+          </div>
+          <div class="form-group">
+            <label class="checkbox-group">
+              <input type="checkbox" id="reg-consent-age"/>
+              <span class="checkbox-text">I confirm that I am the parent or legal guardian of the child named above, and that the child is under 13 years of age.</span>
+            </label>
+          </div>
+          <div class="form-group">
+            <label>Additional Notes (optional)</label>
+            <textarea id="reg-notes" placeholder="Any additional information you'd like us to know..."></textarea>
+          </div>
+        </div>
+
+        <div class="form-submit">
+          <button class="btn-submit" onclick="submitRegister()">Submit Parental Consent</button>
+        </div>
+      </div>
+
+      <div class="form-success" id="register-success">
+        <div class="success-icon">🕯️</div>
+        <div class="success-title">Consent Received</div>
+        <p class="success-text">Thank you. Your submission has been received by the Banana Studios team. Your child's Junior Account will be activated within 24–48 hours. You will not receive a confirmation email — please contact us on Discord if you have not heard back within 48 hours.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════ REPORT APPEAL ═══════════════════════ -->
+  <div id="page-appeal" class="page">
+    <div class="form-page">
+      <div class="form-page-header">
+        <p class="form-page-eyebrow">Moderation</p>
+        <h1 class="form-page-title">Ban Appeal</h1>
+        <div class="form-divider"></div>
+        <p class="form-page-desc">Believe your ban was a mistake? Submit your appeal below.<br/>All appeals are reviewed by a human moderator.</p>
+      </div>
+
+      <div class="notice">
+        <strong>Before you appeal:</strong> Exploiting results in a <strong>permanent ban</strong> and cannot be appealed. False reports against others may result in action taken against your own account. Appeals with fewer than 3 pieces of evidence will be automatically rejected.
+      </div>
+
+      <div id="appeal-form">
+        <div class="form-panel">
+          <div class="form-panel-title">Your Information</div>
+          <div class="form-group">
+            <label>Display Name <span class="required">*</span></label>
+            <input type="text" id="ap-username" placeholder="Your in-game display name"/>
+            <div class="field-error" id="err-ap-username"></div>
+          </div>
+          <div class="form-group">
+            <label>PlayFab ID <span class="required">*</span></label>
+            <input type="text" id="ap-playfabid" placeholder="Found in Settings > Account"/>
+            <div class="field-error" id="err-ap-playfabid"></div>
+          </div>
+          <div class="form-group">
+            <label>Ban Reason Shown <span class="required">*</span></label>
+            <input type="text" id="ap-ban-reason" placeholder="The reason displayed when you were banned"/>
+          </div>
+          <div class="form-group">
+            <label>Your Explanation <span class="required">*</span></label>
+            <textarea id="ap-description" placeholder="Describe what happened and why you believe the ban was incorrect. Be specific."></textarea>
+            <div class="field-error" id="err-ap-description"></div>
+          </div>
+        </div>
+
+        <div class="form-panel">
+          <div class="form-panel-title">Evidence (Minimum 3 Required)</div>
+          <p style="font-size:0.9rem;color:var(--text-dim);margin-bottom:1.25rem;font-style:italic;">For each evidence slot, paste a URL (screenshot/video link) or upload a file directly (max 25MB each).</p>
+
+          <div class="evidence-fields">
+            <div class="evidence-item" id="ev-1">
+              <div class="evidence-label">Evidence 1 <span class="required">*</span></div>
+              <div class="evidence-tabs">
+                <button class="ev-tab active" onclick="switchEvTab(1,'url')">URL / Link</button>
+                <button class="ev-tab" onclick="switchEvTab(1,'file')">Upload File</button>
+              </div>
+              <div class="ev-content active" id="ev-1-url">
+                <input type="text" id="ap-ev1-url" placeholder="https://imgur.com/... or YouTube link, etc."/>
+              </div>
+              <div class="ev-content" id="ev-1-file">
+                <div class="file-upload-area" id="ev-1-drop">
+                  <input type="file" id="ap-ev1-file" accept="image/*,video/*" onchange="handleFileSelect(1,this)"/>
+                  <div class="file-upload-icon">📎</div>
+                  <div class="file-upload-text">Click or drag to upload</div>
+                  <div class="file-upload-sub">Images & video up to 25MB</div>
+                  <div class="file-list" id="ev-1-filelist"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="evidence-item" id="ev-2">
+              <div class="evidence-label">Evidence 2 <span class="required">*</span></div>
+              <div class="evidence-tabs">
+                <button class="ev-tab active" onclick="switchEvTab(2,'url')">URL / Link</button>
+                <button class="ev-tab" onclick="switchEvTab(2,'file')">Upload File</button>
+              </div>
+              <div class="ev-content active" id="ev-2-url">
+                <input type="text" id="ap-ev2-url" placeholder="https://..."/>
+              </div>
+              <div class="ev-content" id="ev-2-file">
+                <div class="file-upload-area">
+                  <input type="file" id="ap-ev2-file" accept="image/*,video/*" onchange="handleFileSelect(2,this)"/>
+                  <div class="file-upload-icon">📎</div>
+                  <div class="file-upload-text">Click or drag to upload</div>
+                  <div class="file-upload-sub">Images & video up to 25MB</div>
+                  <div class="file-list" id="ev-2-filelist"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="evidence-item" id="ev-3">
+              <div class="evidence-label">Evidence 3 <span class="required">*</span></div>
+              <div class="evidence-tabs">
+                <button class="ev-tab active" onclick="switchEvTab(3,'url')">URL / Link</button>
+                <button class="ev-tab" onclick="switchEvTab(3,'file')">Upload File</button>
+              </div>
+              <div class="ev-content active" id="ev-3-url">
+                <input type="text" id="ap-ev3-url" placeholder="https://..."/>
+              </div>
+              <div class="ev-content" id="ev-3-file">
+                <div class="file-upload-area">
+                  <input type="file" id="ap-ev3-file" accept="image/*,video/*" onchange="handleFileSelect(3,this)"/>
+                  <div class="file-upload-icon">📎</div>
+                  <div class="file-upload-text">Click or drag to upload</div>
+                  <div class="file-upload-sub">Images & video up to 25MB</div>
+                  <div class="file-list" id="ev-3-filelist"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="field-error" id="err-ap-evidence" style="margin-top:0.75rem;"></div>
+        </div>
+
+        <div class="form-submit">
+          <button class="btn-submit" onclick="submitAppeal()">Submit Appeal</button>
+        </div>
+      </div>
+
+      <div class="form-success" id="appeal-success">
+        <div class="success-icon">⚖️</div>
+        <div class="success-title">Appeal Submitted</div>
+        <p class="success-text">Your appeal has been sent to the moderation team. If your ban was issued in error, it will be reversed and you will receive 1,000 Evidence as an apology. Appeals are typically reviewed within 72 hours.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════ RESTORE PURCHASE ═══════════════════════ -->
+  <div id="page-restore" class="page">
+    <div class="form-page">
+      <div class="form-page-header">
+        <p class="form-page-eyebrow">Support</p>
+        <h1 class="form-page-title">Restore Purchase</h1>
+        <div class="form-divider"></div>
+        <p class="form-page-desc">Missing DLC or Evidence after a purchase?<br/>We'll get it sorted for you.</p>
+      </div>
+
+      <div class="info-box">
+        Purchases are tied to your PlayFab account. If you've reinstalled the game or switched devices, your items will restore automatically on login. Only submit this form if items are still missing after logging in.
+      </div>
+
+      <div id="restore-form">
+        <div class="form-panel">
+          <div class="form-panel-title">Your Information</div>
+          <div class="form-group">
+            <label>Display Name <span class="required">*</span></label>
+            <input type="text" id="rs-username" placeholder="Your in-game display name"/>
+            <div class="field-error" id="err-rs-username"></div>
+          </div>
+          <div class="form-group">
+            <label>PlayFab ID <span class="required">*</span></label>
+            <input type="text" id="rs-playfabid" placeholder="Found in Settings > Account"/>
+            <div class="field-error" id="err-rs-playfabid"></div>
+          </div>
+          <div class="form-group">
+            <label>Platform Purchased On <span class="required">*</span></label>
+            <select id="rs-platform">
+              <option value="">— Select Platform —</option>
+              <option value="itch.io">itch.io</option>
+              <option value="GameJolt">GameJolt</option>
+              <option value="Steam">Steam</option>
+              <option value="Direct Download">Direct Download</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>What is Missing <span class="required">*</span></label>
+            <textarea id="rs-missing" placeholder="Describe exactly what DLC, Evidence amount, or item is missing..."></textarea>
+            <div class="field-error" id="err-rs-missing"></div>
+          </div>
+        </div>
+
+        <div class="form-panel">
+          <div class="form-panel-title">Proof of Purchase <span class="required">*</span></div>
+          <p style="font-size:0.9rem;color:var(--text-dim);margin-bottom:1.25rem;font-style:italic;">Upload a screenshot or photo of your transaction receipt, order confirmation, or payment history.</p>
+          <div class="file-upload-area" id="rs-drop">
+            <input type="file" id="rs-receipt" accept="image/*,.pdf" onchange="handleRestoreFile(this)"/>
+            <div class="file-upload-icon">🧾</div>
+            <div class="file-upload-text">Upload Transaction Proof</div>
+            <div class="file-upload-sub">Screenshot, photo, or PDF receipt</div>
+            <div class="file-list" id="rs-filelist"></div>
+          </div>
+          <div class="field-error" id="err-rs-receipt" style="margin-top:0.5rem;"></div>
+        </div>
+
+        <div class="form-submit">
+          <button class="btn-submit" onclick="submitRestore()">Submit Restore Request</button>
+        </div>
+      </div>
+
+      <div class="form-success" id="restore-success">
+        <div class="success-icon">🎭</div>
+        <div class="success-title">Request Received</div>
+        <p class="success-text">Your restore request has been sent to our team. We'll verify your purchase and restore your missing items within 48 hours. Thank you for your patience.</p>
+      </div>
+    </div>
+  </div>
+
+</div><!-- #app -->
+
+<!-- ── Helper Bot ── -->
+<button id="bot-toggle" onclick="toggleBot()" title="Mansion Helper">🔮</button>
+<div id="bot-window">
+  <div class="bot-header">
+    <div class="bot-avatar">🏚️</div>
+    <div>
+      <div class="bot-name">Mansion Helper</div>
+      <div class="bot-status"><span class="bot-online-dot"></span>Online</div>
+    </div>
+  </div>
+  <div class="bot-messages" id="bot-messages">
+    <div class="bot-msg from-bot">Welcome to Midnight At The Mansion! Ask me anything about roles, gameplay, or account issues.</div>
+  </div>
+  <div class="bot-typing" id="bot-typing">
+    <div class="typing-dot"></div>
+    <div class="typing-dot"></div>
+    <div class="typing-dot"></div>
+  </div>
+  <div class="bot-input-area">
+    <textarea id="bot-input" placeholder="Ask about roles, bans, errors..." onkeydown="botInputKey(event)"></textarea>
+    <button id="bot-send" onclick="sendBotMessage()">➤</button>
+  </div>
+</div>
+
+<script>
+// ── Config ──
+const RELAY_URL = 'https://cooked-screw-printing-send.trycloudflare.com';
+
+// ── Page routing ──
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  window.scrollTo(0, 0);
+  history.replaceState(null, '', '#' + name);
+}
+
+function initRoute() {
+  const hash = (location.hash || '#home').replace('#', '');
+  const valid = ['home','register','appeal','restore'];
+  showPage(valid.includes(hash) ? hash : 'home');
+}
+window.addEventListener('hashchange', initRoute);
+initRoute();
+
+// ── Evidence tabs ──
+function switchEvTab(num, mode) {
+  document.getElementById('ev-'+num+'-url').classList.toggle('active', mode==='url');
+  document.getElementById('ev-'+num+'-file').classList.toggle('active', mode==='file');
+  const tabs = document.querySelectorAll('#ev-'+num+' .ev-tab');
+  tabs[0].classList.toggle('active', mode==='url');
+  tabs[1].classList.toggle('active', mode==='file');
+}
+
+// ── File handling ──
+function handleFileSelect(evNum, input) {
+  const file = input.files[0];
+  if (!file) return;
+  if (file.size > 25 * 1024 * 1024) {
+    alert('File too large. Maximum size is 25MB.');
+    input.value = '';
+    return;
+  }
+  const list = document.getElementById('ev-'+evNum+'-filelist');
+  list.innerHTML = '<div class="file-item"><span>'+file.name+'</span><button class="file-remove" onclick="clearFile('+evNum+')">Remove</button></div>';
+}
+function clearFile(evNum) {
+  document.getElementById('ap-ev'+evNum+'-file').value = '';
+  document.getElementById('ev-'+evNum+'-filelist').innerHTML = '';
+}
+
+function handleRestoreFile(input) {
+  const file = input.files[0];
+  if (!file) return;
+  if (file.size > 25 * 1024 * 1024) {
+    alert('File too large. Maximum size is 25MB.');
+    input.value = '';
+    return;
+  }
+  document.getElementById('rs-filelist').innerHTML =
+    '<div class="file-item"><span>'+file.name+'</span><button class="file-remove" onclick="clearRestoreFile()">Remove</button></div>';
+}
+function clearRestoreFile() {
+  document.getElementById('rs-receipt').value = '';
+  document.getElementById('rs-filelist').innerHTML = '';
+}
+
+// ── Field validation ──
+function setError(id, msg) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = msg;
+  if (msg) {
+    const input = el.previousElementSibling;
+    if (input && input.tagName !== 'DIV') input.classList.add('error');
+  }
+}
+function clearErrors(ids) {
+  ids.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.textContent = ''; }
+    const fieldId = id.replace('err-','');
+    const field = document.getElementById(fieldId);
+    if (field) field.classList.remove('error');
+  });
+}
+
+// ── POST to relay ──
+async function postToRelay(endpoint, body) {
+  const res = await fetch(RELAY_URL + endpoint, {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify(body)
+  });
+  return res.ok;
+}
+
+async function postFormData(endpoint, formData) {
+  const res = await fetch(RELAY_URL + endpoint, {
+    method: 'POST',
+    body: formData
+  });
+  return res.ok;
+}
+
+// ── REGISTER submit ──
+async function submitRegister() {
+  clearErrors(['err-reg-parent-name','err-reg-parent-email','err-reg-child-username','err-reg-child-dob']);
+  let valid = true;
+
+  const parentName   = document.getElementById('reg-parent-name').value.trim();
+  const parentEmail  = document.getElementById('reg-parent-email').value.trim();
+  const relationship = document.getElementById('reg-relationship').value;
+  const childUser    = document.getElementById('reg-child-username').value.trim();
+  const childDob     = document.getElementById('reg-child-dob').value;
+  const consentData  = document.getElementById('reg-consent-data').checked;
+  const consentRules = document.getElementById('reg-consent-rules').checked;
+  const consentAge   = document.getElementById('reg-consent-age').checked;
+  const notes        = document.getElementById('reg-notes').value.trim();
+
+  if (!parentName)  { setError('err-reg-parent-name','Please enter your full name.'); valid=false; }
+  if (!parentEmail || !parentEmail.includes('@')) { setError('err-reg-parent-email','Please enter a valid email.'); valid=false; }
+  if (!childUser)   { setError('err-reg-child-username','Please enter the child\'s username.'); valid=false; }
+  if (!childDob)    { setError('err-reg-child-dob','Please enter the child\'s date of birth.'); valid=false; }
+  if (!consentData || !consentRules || !consentAge) {
+    alert('Please check all three consent boxes to proceed.');
+    valid = false;
+  }
+  if (!valid) return;
+
+  const btn = document.querySelector('#register-form .btn-submit');
+  btn.disabled = true; btn.textContent = 'Submitting...';
+
+  const ok = await postToRelay('/api/forms/register', {
+    parent_name: parentName, parent_email: parentEmail,
+    relationship, child_username: childUser,
+    child_dob: childDob, notes
+  });
+
+  if (ok) {
+    document.getElementById('register-form').style.display = 'none';
+    document.getElementById('register-success').classList.add('visible');
+  } else {
+    btn.disabled = false; btn.textContent = 'Submit Parental Consent';
+    alert('Something went wrong. Please try again or contact us on Discord.');
+  }
+}
+
+// ── APPEAL submit ──
+function getEvidence(num) {
+  const urlTab = document.getElementById('ev-'+num+'-url').classList.contains('active');
+  if (urlTab) {
+    return { type:'url', value: document.getElementById('ap-ev'+num+'-url').value.trim() };
+  } else {
+    const file = document.getElementById('ap-ev'+num+'-file').files[0];
+    return { type:'file', value: file ? file.name : '' };
+  }
+}
+
+async function submitAppeal() {
+  clearErrors(['err-ap-username','err-ap-playfabid','err-ap-description','err-ap-evidence']);
+  let valid = true;
+
+  const username    = document.getElementById('ap-username').value.trim();
+  const playfabid   = document.getElementById('ap-playfabid').value.trim();
+  const banReason   = document.getElementById('ap-ban-reason').value.trim();
+  const description = document.getElementById('ap-description').value.trim();
+
+  if (!username)    { setError('err-ap-username','Please enter your display name.'); valid=false; }
+  if (!playfabid)   { setError('err-ap-playfabid','Please enter your PlayFab ID.'); valid=false; }
+  if (!description) { setError('err-ap-description','Please describe what happened.'); valid=false; }
+
+  const ev1 = getEvidence(1);
+  const ev2 = getEvidence(2);
+  const ev3 = getEvidence(3);
+  const filledEvidence = [ev1,ev2,ev3].filter(e => e.value !== '');
+  if (filledEvidence.length < 3) {
+    setError('err-ap-evidence','All 3 evidence fields are required.');
+    valid = false;
+  }
+  if (!valid) return;
+
+  const btn = document.querySelector('#appeal-form .btn-submit');
+  btn.disabled = true; btn.textContent = 'Submitting...';
+
+  // Build form data to support file uploads
+  const fd = new FormData();
+  fd.append('username', username);
+  fd.append('playfab_id', playfabid);
+  fd.append('ban_reason', banReason);
+  fd.append('description', description);
+  for (let i = 1; i <= 3; i++) {
+    const urlEl = document.getElementById('ap-ev'+i+'-url');
+    const fileEl = document.getElementById('ap-ev'+i+'-file');
+    const urlTab = document.getElementById('ev-'+i+'-url').classList.contains('active');
+    if (urlTab) {
+      fd.append('evidence_url_'+i, urlEl.value.trim());
+    } else if (fileEl.files[0]) {
+      fd.append('evidence_file_'+i, fileEl.files[0]);
+    }
+  }
+
+  const ok = await postFormData('/api/forms/appeal', fd);
+
+  if (ok) {
+    document.getElementById('appeal-form').style.display = 'none';
+    document.getElementById('appeal-success').classList.add('visible');
+  } else {
+    btn.disabled = false; btn.textContent = 'Submit Appeal';
+    alert('Something went wrong. Please try again or contact us on Discord.');
+  }
+}
+
+// ── RESTORE submit ──
+async function submitRestore() {
+  clearErrors(['err-rs-username','err-rs-playfabid','err-rs-missing','err-rs-receipt']);
+  let valid = true;
+
+  const username  = document.getElementById('rs-username').value.trim();
+  const playfabid = document.getElementById('rs-playfabid').value.trim();
+  const platform  = document.getElementById('rs-platform').value;
+  const missing   = document.getElementById('rs-missing').value.trim();
+  const receipt   = document.getElementById('rs-receipt').files[0];
+
+  if (!username)  { setError('err-rs-username','Please enter your display name.'); valid=false; }
+  if (!playfabid) { setError('err-rs-playfabid','Please enter your PlayFab ID.'); valid=false; }
+  if (!missing)   { setError('err-rs-missing','Please describe what is missing.'); valid=false; }
+  if (!receipt)   { setError('err-rs-receipt','Please upload proof of purchase.'); valid=false; }
+  if (!valid) return;
+
+  const btn = document.querySelector('#restore-form .btn-submit');
+  btn.disabled = true; btn.textContent = 'Submitting...';
+
+  const fd = new FormData();
+  fd.append('username', username);
+  fd.append('playfab_id', playfabid);
+  fd.append('platform', platform);
+  fd.append('missing', missing);
+  fd.append('receipt', receipt);
+
+  const ok = await postFormData('/api/forms/restore', fd);
+
+  if (ok) {
+    document.getElementById('restore-form').style.display = 'none';
+    document.getElementById('restore-success').classList.add('visible');
+  } else {
+    btn.disabled = false; btn.textContent = 'Submit Restore Request';
+    alert('Something went wrong. Please try again or contact us on Discord.');
+  }
+}
+
+// ── Helper Bot ──
+let botOpen = false;
+let botHistory = [];
+
+function toggleBot() {
+  botOpen = !botOpen;
+  document.getElementById('bot-window').classList.toggle('open', botOpen);
+  document.getElementById('bot-toggle').classList.toggle('open', botOpen);
+  document.getElementById('bot-toggle').textContent = botOpen ? '✕' : '🔮';
+  if (botOpen) document.getElementById('bot-input').focus();
+}
+
+function botInputKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendBotMessage(); }
+}
+
+function appendBotMsg(text, fromBot) {
+  const el = document.createElement('div');
+  el.className = 'bot-msg ' + (fromBot ? 'from-bot' : 'from-user');
+  el.textContent = text;
+  const msgs = document.getElementById('bot-messages');
+  msgs.appendChild(el);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+async function sendBotMessage() {
+  const input = document.getElementById('bot-input');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  appendBotMsg(text, false);
+
+  botHistory.push({ role: 'user', content: text });
+
+  const typing = document.getElementById('bot-typing');
+  const msgs = document.getElementById('bot-messages');
+  msgs.appendChild(typing);
+  typing.classList.add('visible');
+  msgs.scrollTop = msgs.scrollHeight;
+
+  try {
+    const res = await fetch(RELAY_URL + '/api/bot/chat', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ message: text, history: botHistory.slice(-10) })
+    });
+    const data = await res.json();
+    const reply = data.reply || "Sorry, I couldn't get a response right now. Try again or ask on Discord!";
+    botHistory.push({ role: 'assistant', content: reply });
+    typing.classList.remove('visible');
+    appendBotMsg(reply, true);
+  } catch(e) {
+    typing.classList.remove('visible');
+    appendBotMsg("I'm having trouble connecting right now. Please ask on our Discord server!", true);
+  }
+}
+</script>
+</body>
+</html>
